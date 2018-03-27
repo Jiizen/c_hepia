@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_10_polynomes/backup.c
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
+
+/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_10_polynomes/main.c
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
+

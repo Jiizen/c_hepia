@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/cc -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/serie_10_polynomes.dir/main.c.o CMakeFiles/serie_10_polynomes.dir/backup.c.o  -o serie_10_polynomes 

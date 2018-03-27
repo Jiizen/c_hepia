@@ -1,0 +1,19 @@
+"/Users/evlyn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/173.4548.31/CLion.app/Contents/bin/cmake/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_9_fractions"
+CMake Error at CMakeLists.txt:2 (project):
+  The CMAKE_C_COMPILER:
+
+    /Library/Developer/CommandLineTools/usr/bin/cc
+
+  is not a full path to an existing compiler tool.
+
+  Tell CMake where to find the compiler by setting either the environment
+  variable "CC" or the CMake cache entry CMAKE_C_COMPILER to the full path to
+  the compiler, or to the compiler name if it is in the PATH.
+
+
+-- Configuring incomplete, errors occurred!
+See also "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_9_fractions/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+Cannot read /Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_9_fractions/cmake-build-debug/CMakeFiles/3.9.6/CMakeCCompiler.cmake
+
+Cannot get compiler information:
+	Cannot run program "/Library/Developer/CommandLineTools/usr/bin/cc" (in directory "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_9_fractions/cmake-build-debug"): error=2, No such file or directory

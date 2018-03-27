@@ -1,0 +1,4 @@
+"/Users/evlyn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/173.4674.29/CLion.app/Contents/bin/cmake/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_10_polynomes"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie_10_polynomes/cmake-build-debug
