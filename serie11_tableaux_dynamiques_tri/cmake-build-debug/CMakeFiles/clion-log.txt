@@ -1,4 +1,4 @@
-"/Users/evlyn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/173.4674.29/CLion.app/Contents/bin/cmake/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie11_tableaux_dynamiques_tri"
+"/Users/evlyn/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/173.4674.29/CLion.app/Contents/bin/cmake/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/c_hepia/serie11_tableaux_dynamiques_tri"
 -- The C compiler identification is AppleClang 9.0.0.9000039
 -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
 -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
@@ -8,4 +8,4 @@
 -- Detecting C compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/Exercices/serie11_tableaux_dynamiques_tri/cmake-build-debug
+-- Build files have been written to: /Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/c_hepia/serie11_tableaux_dynamiques_tri/cmake-build-debug

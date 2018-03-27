@@ -105,5 +105,7 @@ int main() {
     // Afficher le tableau trié
     afficherTab(tableau1Trie);
 
+
+
     // Lire le fichier etudiants3.txt contenant 148 chaînes de caractères
 }
