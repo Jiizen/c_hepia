@@ -36,15 +36,14 @@ void afficherTab(TabString *tableau) {
     }
 }
 
-/*
-void copierTab() {
-
+TabString *concatTab(TabString *tableau1, TabString *tableau2, TabString *tableauFinal) {
+    int m = 0;
+    for (int l = tableau1->size + 1; l < tableauFinal->size + 1; l++) {
+        tableauFinal->chaine[l] = tableau2->chaine[m];
+        m++;
+    }
+    return tableauFinal;
 }
-
-void concatTab() {
-
-}
-*/
 
 TabString *trierTab(TabString *tableau) {
 
@@ -63,10 +62,9 @@ TabString *trierTab(TabString *tableau) {
     return tableau;
 }
 
-/*
-void detruireTab() {
-
-}*/
+void detruireTab(TabString *tableau) {
+    free(tableau);
+}
 
 int main() {
 
@@ -142,21 +140,15 @@ int main() {
 
     /****** TABLEAU CONCAT ******/
 
-    // Concaténer les 2 tableaux
+    // Concaténer les 2 tableaux en 1 seul
 
     TabString *tableauConcat;
     tableauConcat->chaine = malloc(sizeof(MAX_CHAR) * (tableau1->size + 1));
-    memcpy(tableauConcat, tableau1, sizeof(TabString));
-    tableauConcat->size = tableau1->size + tableau2->size;
 
-    int m = 0;
-    for (int l = tableau1->size + 1; l < tableauConcat->size + 1; l++) {
-        tableauConcat->chaine[l] = tableau2Trie->chaine[m];
-        m++;
-    }
-    printf("%d \n", tableau1->size + 1);
-    printf("%d \n", tableauConcat->size);
-    printf("%d \n", m);
+    memcpy(tableauConcat, tableau1, sizeof(TabString));
+
+    tableauConcat->size = tableau1->size + tableau2->size;
+    tableauConcat = concatTab(tableau1, tableau2, tableauConcat);
 
     // Afficher tableau concaténé
     afficherTab(tableauConcat);
@@ -166,4 +158,8 @@ int main() {
 
     // Afficher le tableau trié
     afficherTab(tableauConcatTrie);
+
+    // Destruction des 2 autres tableaux
+    detruireTab(tableau1);
+    detruireTab(tableau2);
 }
