@@ -1,3 +1,7 @@
+clc;
+clear all;
+close all;
+
 # Matrice de 4x4
 matrice = (round(rand(6,6)*100))
 # matrice = [1:4 ; 3:6; 5:8; 6:9]
@@ -33,4 +37,4 @@ function det = determinant_general(A)
 endfunction
 
 determinant_general(matrice)
-det(matrice)
+# det(matrice) // Pour comparer les résultats 
