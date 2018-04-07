@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 struct Chaine_char {
     char *caracteres;
@@ -19,16 +20,16 @@ struct TableauString {
 };
 typedef struct TableauString TabString;
 
-TabString * creerTab(int maxChar, int nbLignes) {
+TabString *creerTab(int maxChar, int nbLignes) {
     // Initialisation du tableau dynamique
-    TabString * tableau;
+    TabString *tableau;
     tableau = (TabString *) malloc(sizeof(TabString));
     tableau->size = nbLignes;
-    tableau->chaine = (Chaine *) malloc(sizeof(maxChar) * nbLignes);
+    tableau->chaine = (Chaine *) malloc(sizeof(maxChar) * (nbLignes + 1));
     return tableau;
 }
 
-void afficherTab(TabString * tableau) {
+void afficherTab(TabString *tableau) {
     int i;
     for (i = 0; i < tableau->size; i++) {
         printf("%s \n", tableau->chaine[i].caracteres);
@@ -45,14 +46,14 @@ void concatTab() {
 }
 */
 
-TabString * trierTab(TabString * tableau) {
+TabString *trierTab(TabString *tableau) {
 
     int i, j;
     Chaine temp;
 
-    for(i = 0; i < tableau->size;i++) {
-        for(j = 1; j < tableau->size; j++) {
-            if(strcmp(tableau->chaine[i].caracteres, tableau->chaine[j].caracteres) < 0) {
+    for (i = 0; i < tableau->size; i++) {
+        for (j = 0; j < tableau->size; j++) {
+            if (strcmp(tableau->chaine[i].caracteres, tableau->chaine[j].caracteres) < 0) {
                 temp = tableau->chaine[i];
                 tableau->chaine[i] = tableau->chaine[j];
                 tableau->chaine[j] = temp;
@@ -61,6 +62,7 @@ TabString * trierTab(TabString * tableau) {
     }
     return tableau;
 }
+
 /*
 void detruireTab() {
 
@@ -79,8 +81,10 @@ int main() {
     char unStr[MAX_CHAR];
     int i;
 
+    /****** TABLEAU 1 ******/
+
     // Création entité premier tableau
-    TabString * tableau1 = creerTab(MAX_CHAR, TAILLE_FICHIER_1);
+    TabString *tableau1 = creerTab(MAX_CHAR, TAILLE_FICHIER_1);
 
     fid = fopen(NOM_FICHIER_1, "r"); // ouverture fichier
 
@@ -97,15 +101,69 @@ int main() {
     fclose(fid); // fermeture du fichier
 
     // Afficher tableau1 non trié
-    afficherTab(tableau1);
+    //afficherTab(tableau1);
 
     // Trier le tableau par sélection
-    TabString * tableau1Trie = trierTab(tableau1);
+    TabString *tableau1Trie = trierTab(tableau1);
 
     // Afficher le tableau trié
-    afficherTab(tableau1Trie);
+    //afficherTab(tableau1Trie);
 
+    /****** TABLEAU 2 ******/
 
+    // Création entité deuxième tableau
+    TabString *tableau2 = creerTab(MAX_CHAR, TAILLE_FICHIER_2);
+
+    fid = fopen(NOM_FICHIER_2, "r"); // ouverture fichier
 
     // Lire le fichier etudiants3.txt contenant 148 chaînes de caractères
+    for (i = 0; i < TAILLE_FICHIER_2; i++) {
+        fscanf(fid, "%s", unStr);
+
+        // Malloc pour chaque chaine du tableau
+        tableau2->chaine[i].caracteres = malloc(sizeof(unStr));
+
+        // Construction du tableau de chaînes de caractères non trié
+        if (((unStr[1] >= 'a' && unStr[1] <= 'z') || (unStr[0] >= 'A' && unStr[0] <= 'Z'))) {
+            // Je ne parviens pas à enlever les caractères spéciaux (mauvais encodage... ?)
+            strcpy(tableau2->chaine[i].caracteres, unStr);
+        }
+    }
+    fclose(fid); // fermeture du fichier
+
+    // Afficher tableau2 non trié
+    //afficherTab(tableau2);
+
+    // Trier le tableau par sélection
+    TabString *tableau2Trie = trierTab(tableau2);
+
+    // Afficher le tableau trié
+    //afficherTab(tableau2Trie);
+
+    /****** TABLEAU CONCAT ******/
+
+    // Concaténer les 2 tableaux
+
+    TabString *tableauConcat;
+    tableauConcat->chaine = malloc(sizeof(MAX_CHAR) * (tableau1->size + 1));
+    memcpy(tableauConcat, tableau1, sizeof(TabString));
+    tableauConcat->size = tableau1->size + tableau2->size;
+
+    int m = 0;
+    for (int l = tableau1->size + 1; l < tableauConcat->size + 1; l++) {
+        tableauConcat->chaine[l] = tableau2Trie->chaine[m];
+        m++;
+    }
+    printf("%d \n", tableau1->size + 1);
+    printf("%d \n", tableauConcat->size);
+    printf("%d \n", m);
+
+    // Afficher tableau concaténé
+    afficherTab(tableauConcat);
+
+    // Trier le tableau par sélection
+    TabString * tableauConcatTrie = trierTab(tableauConcat);
+
+    // Afficher le tableau trié
+    afficherTab(tableauConcatTrie);
 }

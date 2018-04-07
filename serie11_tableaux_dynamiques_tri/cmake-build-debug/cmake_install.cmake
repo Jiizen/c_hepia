@@ -1,4 +1,4 @@
-# Install script for directory: /Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/c_hepia/serie11_tableaux_dynamiques_tri
+# Install script for directory: /Users/evlyn/SynologyDrive/Hepia/repo_hepia/serie11_tableaux_dynamiques_tri
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -35,5 +35,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/evlyn/SynologyDrive/Hepia/C/Semestre 2/c_hepia/serie11_tableaux_dynamiques_tri/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/serie11_tableaux_dynamiques_tri/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
