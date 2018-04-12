@@ -1,0 +1,1 @@
+clc;clear all;close all;# Affichage intensification du rougeA = imread("kawaii_ice.jpg"); % On enregistre l'image sous forme matricielle# imshow(A) % Afficher l'image for i=1:rows(A)  for j=1:columns(A)      A(i, j, 1) = 5 * A(i, j, 1); # On intensifie de 5x la valeur de base de rouge  endforendfor imshow(A)
