@@ -1,14 +1,11 @@
+### 1. CALCUL DU DETERMINANT ### 
+
 clc;
 clear all;
 close all;
 
 # Matrice de 4x4
-matrice = (round(rand(6,6)*100))
-# matrice = [1:4 ; 3:6; 5:8; 6:9]
-
-# 1. Déterminant
-# matrice(2,2) = 0 
-# matrice(2) = 0
+matrice = (round(rand(4,4)*100))
 
 #Fonction qui calcule de co-facteur
 function cof = cofactor(matriceCof, i, j) %cof est la variable retournée
