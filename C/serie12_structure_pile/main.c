@@ -2,18 +2,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+// Entité "lettre"
 typedef struct Lettre Lettre;
 struct Lettre {
     char valeur;
     Lettre *suivante;
 };
 
+// Entité pile
 typedef struct Pile Pile;
 struct Pile {
     int profondeur;
     Lettre *premiere;
 };
 
+// Initialisation de la pile : on alloue la mémoire pour la taille d'une pile et on définit les valeurs de base pour profondeur et premier élément
 Pile *initPile() {
     Pile *pile = malloc(sizeof(Pile));
     pile->profondeur = 0;
@@ -21,10 +24,12 @@ Pile *initPile() {
     return pile;
 }
 
+// On récupère la profondeur de la pile
 int profondeur(Pile *pile) {
     return pile->profondeur;
 }
 
+// On vérifie si la pile est vide. Profondeur = 0 ?
 bool estVide(Pile *pile) {
     if (pile->profondeur == 0) {
         return true;
@@ -33,10 +38,15 @@ bool estVide(Pile *pile) {
     }
 }
 
+// On récupère l'élément tout en haut de la pile
 Lettre * sommet(Pile *pile) {
     return pile->premiere;
 }
 
+/* On ajoute une lettre en haut de la pile : allocation mémoire pour une lettre + définition valeurs lettre.
+ * On définit que la lettre en haut de la pile devient la suivante et que la nouvelle est le premier élément
+ * de la pile
+ */
 void empiler(Pile *pile, char ch) {
     Lettre *newLettre = malloc(sizeof(Lettre));
     newLettre->valeur = ch;
@@ -47,6 +57,12 @@ void empiler(Pile *pile, char ch) {
     pile->profondeur += 1;
 }
 
+/* On enlève la lettre qui est en haut de la pile
+ * On sélectionne la pile au sommet et la pile n'est pas vide,
+ * On définit que la première lettre de la pile devient celle d'après
+ * et on supprime la lettre dépilée, qui est celle tout en haut
+ * On baisse la profondeur de 1, car on a enlevé un élément
+ */
 char depiler(Pile *pile) {
     char charDepile = '/';
     Lettre *lettreDepilee = sommet(pile);
