@@ -59,5 +59,10 @@ int depiler(Pile *pile) {
         free(nbDepile);
         pile->profondeur -= 1;
     }
+
+    if(profondeur(pile) == 0) {
+        pile->premier = NULL;
+    }
+
     return valueDepilee;
 }
