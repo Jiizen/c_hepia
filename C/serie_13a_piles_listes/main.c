@@ -1,3 +1,9 @@
+/**
+ * Created by Evlyn on 15.05.18.
+ * TP : Exercice 13A : Piles et listes
+ * Programme principal
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <tcl.h>
