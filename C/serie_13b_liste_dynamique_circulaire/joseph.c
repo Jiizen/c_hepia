@@ -1,3 +1,9 @@
+/**
+ * Created by Evlyn
+ * TP : Exercice 13B : Liste dynamique circulaire
+ * Problème de Joseph
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <tcl.h>
