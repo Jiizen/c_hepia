@@ -199,13 +199,18 @@ void afficherListe(ListeMot *liste) {
 }
 
 // Supprime un mot dans une liste triée
-void delete(char *motToDelete, ListeMot *liste) {
+void delete(char * motToDelete, ListeMot * liste) {
 
     Mot *motToTest = liste->premier;
 
     for (int i = 0; i <= liste->nbMot + 1; i++) {
         if (strcmp(motToDelete, motToTest->mot) == 0) {
+            Mot *previous = motToTest->precedent;
+            Mot *next = motToTest->suivant;
+            previous->suivant = next;
+            next->precedent = previous;
             free(motToTest);
+            break;
         }
         motToTest = motToTest->suivant;
     }
@@ -294,10 +299,11 @@ int main() {
         printf("Le fichier %s n'a pas pu être ouvert !", NOM_FICHIER_2);
     }
 
-    delete("wringing", liste1);
+    // Test suppression mot dans liste
+    // delete("within", liste2);
 
     // Affichage des 2 listes, triées séparément
-    afficherListe(liste2);
+    //afficherListe(liste1);
     // afficherListe(liste2);
 }
 
