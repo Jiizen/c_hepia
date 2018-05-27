@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <tcl.h>
 #include <memory.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 // Entité "chaine"
 typedef struct Mot Mot;
 struct Mot {
-    char* mot;
+    char *mot;
     int nbOccurence;
     Mot *suivant;
     Mot *precedent;
@@ -29,19 +29,19 @@ ListeMot *initListe() {
 }
 
 // Nettoie un mot
-char * clean(char * mot) {
+char *clean(char *mot) {
 
     // Nettoyage du fin du mot
-    while(ispunct(mot[strlen(mot) - 1])) {
+    while (ispunct(mot[strlen(mot) - 1])) {
         mot[strlen(mot) - 1] = '\0';
     }
 
     // Nettoyage du début du mot
-    while(ispunct(mot[0])) {
+    while (ispunct(mot[0])) {
         // Parcourir la chaîne de caractère
-        for(int i = 0; i < strlen(mot); i++) {
+        for (int i = 0; i < strlen(mot); i++) {
             mot[i] = mot[i + 1];
-            if(i == strlen(mot)) {
+            if (i == strlen(mot)) {
                 mot[i] = '\0';
             }
         }
@@ -55,56 +55,117 @@ char * clean(char * mot) {
     return mot;
 }
 
-//// Recherche un mot dans une liste triée et retourne le nombre d'occurences de ce mot
-//void search() {
-//
-//}
-//
+// Recherche un mot dans une liste triée, incrémente et retourne le nombre d'occurences de ce mot
+int search(Mot *motToSearch, ListeMot *liste) {
+
+    if (strcmp(motToSearch->mot, liste->premier->mot) == 0) {
+        liste->premier->nbOccurence++;
+        return liste->premier->nbOccurence;
+    }
+
+    Mot *motTeste = malloc(sizeof(Mot));
+    motTeste = liste->premier;
+
+    for (int i = 0; i <= liste->nbMot; i++) {
+
+        if (motTeste->suivant != NULL) {
+            // if(strcmp("", motTeste->suivant->mot) == 0) {
+            //    free(motTeste);
+            // }else
+            if (strcmp(motToSearch->mot, motTeste->suivant->mot) == 0) {
+                motTeste->suivant->nbOccurence++;
+                return motTeste->suivant->nbOccurence;
+            }
+            motTeste = motTeste->suivant;
+        } else {
+            return 0;
+        }
+    }
+    return 0;
+}
+
 
 // Insère un mot dans une liste triée lexicographiquement et incrémente le compteur si le mot est déjà présent
-void insert(char * mot, ListeMot * liste) {
+void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
 
     // Création d'un objet "mot"
     Mot *motToInsert = malloc(sizeof(Mot));
-    motToInsert->mot = mot;
+    motToInsert->mot = malloc(sizeof(char) * MAX_CHAR);
+    memcpy(motToInsert->mot, mot, sizeof(char) * MAX_CHAR);
+    motToInsert->precedent = NULL;
+    motToInsert->suivant = NULL;
 
-    // Si la chaîne est vide, on insère directement le mot
-    if(liste->premier == NULL) {
+    // Si la liste est vide, on insère directement le mot
+    if (liste->premier == NULL) {
         liste->premier = motToInsert;
-        motToInsert->nbOccurence = 0;
+        motToInsert->nbOccurence = 1;
         liste->nbMot = 1;
     } else {
 
-        // Rechercher le mot dans la liste. S'il y est : le trouver et augmenter son nb d'occurences de 1 ; sinon, trouver où le positionner
-        int * nbOccurence = search(motToInsert);
-        if(nbOccurence != NULL) {
-            nbOccurence++;
-        } else {
+        // Rechercher le mot dans la liste
+        int nbOccurence = search(motToInsert, liste);
 
-            motToInsert->nbOccurence = 0;
+        if (nbOccurence == 0) {
+
+            motToInsert->nbOccurence = 1;
 
             // Parcourir la liste pour voir où mettre notre chaine
 
-            Mot *motToCompare = malloc(sizeof(Mot));
-            motToCompare = liste->premier;
-
-            if(strcmp(motToCompare->mot, motToInsert->mot) < 0 && strcmp(motToInsert->mot, motToCompare->suivant->mot) < 0) {
-                liste->premier = motToInsert;
-                motToCompare->precedent = motToInsert;
+            // Un seul mot dans la liste : mon mot à insérer est plus petit
+            if (liste->premier->suivant == NULL) {
+                if(strcmp(motToInsert->mot, liste->premier->mot) < 0) {
+                    motToInsert->suivant = liste->premier;
+                    liste->premier = motToInsert;
+                } else {
+                    motToInsert->precedent = liste->premier;
+                    liste->premier->suivant = motToInsert;
+                }
+                liste->nbMot++;
             } else {
 
-                for(int j = 0; j < liste->nbMot; j++) {
-                    if(strcmp(motToCompare->mot, motToInsert->mot) < 0 && strcmp(motToInsert->mot, motToCompare->suivant->mot) < 0) {
-                        // motToInsert
+                Mot *mot1 = liste->premier;
+                Mot *mot2 = liste->premier->suivant;
 
-                        
+                for (int j = 0; j <= liste->nbMot; j++) {
 
+                    // mot 1 < mot à insérer < mot 2
+
+                    bool motToCompareLesserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
+                    bool nextMotToCompareGreaterThanMotToInsert = strcmp(mot2->mot, motToInsert->mot) > 0;
+
+                    if (motToCompareLesserThanMotToInsert && nextMotToCompareGreaterThanMotToInsert) {
+
+                        // Lien entre mot 1 et mot à insérer
+                        motToInsert->precedent = mot1;
+                        mot1->suivant = motToInsert;
+
+                        // Lien entre mot à insérer et mot 2
+                        motToInsert->suivant = mot2;
+                        mot2->precedent = motToInsert;
+
+                        motToInsert->nbOccurence = 1;
+                        liste->nbMot++;
+                    }
+
+                    bool lastMotLessserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
+                    bool nextMotToCompareIsNull = mot1->suivant == NULL;
+
+                    // Test du dernier mot
+                    if (lastMotLessserThanMotToInsert && nextMotToCompareIsNull) {
+                        mot1->suivant = motToInsert;
+                        motToInsert->precedent = mot1;
+                        motToInsert->suivant = NULL;
+                    }
+
+                    mot1 = mot2;
+                    if(mot2->suivant != NULL) {
+                        mot2 = mot2->suivant;
                     }
                 }
-
             }
         }
     }
+    // free(motToInsert);
 }
 
 //// Supprime un mot dans une liste triée
@@ -132,29 +193,40 @@ int main() {
     //if (strcmp(tableau->chaine[i].caracteres, tableau->chaine[j].caracteres) < 0) {
 
     // Initialisation de la liste de mots
-    ListeMot *liste = initListe();
-    const char NOM_FICHIER_1[] = "languageSymbolismMusic.txt";
+    ListeMot *liste1 = initListe();
+    const char NOM_FICHIER_1[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_13c_listes_mots/languageSymbolismMusic.txt";
     const char NOM_FICHIER_2[] = "onTheOriginOfMusic.txt";
     const int MAX_CHAR = 30;
     FILE *fid;
-    char mot[MAX_CHAR];
-    char * motCleane;
+    char *mot = malloc(sizeof(char) * MAX_CHAR);
+    char *motCleane;
 
     fid = fopen(NOM_FICHIER_1, "r"); // Ouverture du fichier
 
-    if(fid != NULL) {
+    if (fid != NULL) {
         while (!feof(fid)) {
             fscanf(fid, "%s", mot);
 
+            char *newMot = malloc(sizeof(char) * MAX_CHAR);
+
             // Nettoyage des caractères de ponctuation et mise en minuscules
             motCleane = clean(mot);
+            memcpy(newMot, motCleane, sizeof(char) * MAX_CHAR);
 
             // Insérer le mot dans la liste
-            insert(motCleane, liste);
+            insert(motCleane, MAX_CHAR, liste1);
+            free(newMot);
         }
         fclose(fid); // fermeture du fichier
     } else {
         printf("Le fichier n'a pas pu être ouvert !");
+    }
+
+    Mot *motALire = liste1->premier;
+    for (int i = 0; i < liste1->nbMot; i++) {
+
+        printf("Mot : %s et Nb occurences : %d \n", motALire->mot, motALire->nbOccurence);
+        motALire = motALire->suivant;
     }
 }
 
