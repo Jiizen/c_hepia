@@ -139,40 +139,50 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
                 Mot *mot1 = liste->premier;
                 Mot *mot2 = liste->premier->suivant;
 
-                for (int j = 0; j <= liste->nbMot + 1; j++) {
+                // Test du premier mot
+                if (strcmp(motToInsert->mot, mot1->mot) < 0) {
+                    motToInsert->suivant = mot1;
+                    liste->premier = motToInsert;
 
-                    // mot 1 < mot à insérer < mot 2
-                    bool motToCompareLesserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
-                    bool nextMotToCompareGreaterThanMotToInsert = strcmp(mot2->mot, motToInsert->mot) > 0;
+                    motToInsert->nbOccurence = 1;
+                    liste->nbMot++;
+                } else {
 
-                    if (motToCompareLesserThanMotToInsert && nextMotToCompareGreaterThanMotToInsert) {
+                    for (int j = 0; j <= liste->nbMot + 1; j++) {
 
-                        // Lien entre mot 1 et mot à insérer
-                        motToInsert->precedent = mot1;
-                        mot1->suivant = motToInsert;
+                        // mot 1 < mot à insérer < mot 2
+                        bool motToCompareLesserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
+                        bool nextMotToCompareGreaterThanMotToInsert = strcmp(mot2->mot, motToInsert->mot) > 0;
 
-                        // Lien entre mot à insérer et mot 2
-                        motToInsert->suivant = mot2;
-                        mot2->precedent = motToInsert;
+                        if (motToCompareLesserThanMotToInsert && nextMotToCompareGreaterThanMotToInsert) {
 
-                        motToInsert->nbOccurence = 1;
-                        liste->nbMot++;
-                    }
+                            // Lien entre mot 1 et mot à insérer
+                            motToInsert->precedent = mot1;
+                            mot1->suivant = motToInsert;
 
-                    // Savoir où placer notre mot si on est au dernier élément de la liste
-                    bool lastMotLessserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
-                    bool nextMotToCompareIsNull = mot1->suivant == NULL;
+                            // Lien entre mot à insérer et mot 2
+                            motToInsert->suivant = mot2;
+                            mot2->precedent = motToInsert;
 
-                    // Si le dernier mot est plus petit que le nôtre, notre mot prend la dernière place
-                    if (lastMotLessserThanMotToInsert && nextMotToCompareIsNull) {
-                        mot1->suivant = motToInsert;
-                        motToInsert->precedent = mot1;
-                        motToInsert->suivant = NULL;
-                    }
+                            motToInsert->nbOccurence = 1;
+                            liste->nbMot++;
+                        }
 
-                    mot1 = mot2;
-                    if (mot2->suivant != NULL) {
-                        mot2 = mot2->suivant;
+                        // Savoir où placer notre mot si on est au dernier élément de la liste
+                        bool lastMotLessserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
+                        bool nextMotToCompareIsNull = mot1->suivant == NULL;
+
+                        // Si le dernier mot est plus petit que le nôtre, notre mot prend la dernière place
+                        if (lastMotLessserThanMotToInsert && nextMotToCompareIsNull) {
+                            mot1->suivant = motToInsert;
+                            motToInsert->precedent = mot1;
+                            motToInsert->suivant = NULL;
+                        }
+
+                        mot1 = mot2;
+                        if (mot2->suivant != NULL) {
+                            mot2 = mot2->suivant;
+                        }
                     }
                 }
             }
@@ -180,11 +190,27 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
     }
 }
 
-//// Supprime un mot dans une liste triée
-//void delete() {
-//
-//}
-//
+void afficherListe(ListeMot *liste) {
+    Mot *motALire1 = liste->premier;
+    for (int i = 0; i <= liste->nbMot + 1; i++) {
+        printf("Le mot '%s' a %d occurence(s) \n", motALire1->mot, motALire1->nbOccurence);
+        motALire1 = motALire1->suivant;
+    }
+}
+
+// Supprime un mot dans une liste triée
+void delete(char *motToDelete, ListeMot *liste) {
+
+    Mot *motToTest = liste->premier;
+
+    for (int i = 0; i <= liste->nbMot + 1; i++) {
+        if (strcmp(motToDelete, motToTest->mot) == 0) {
+            free(motToTest);
+        }
+        motToTest = motToTest->suivant;
+    }
+}
+
 //// Retourne une liste triée avec tous les mots communs à 2 listes triées (met aussi leur nombre d'occurences)
 //void intersect() {
 //
@@ -207,9 +233,10 @@ int main() {
     ListeMot *liste2 = initListe();
 
     // Variables fichiers
-    //const char NOM_FICHIER_1[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_13c_listes_mots/languageSymbolismMusic.txt";
-    const char NOM_FICHIER_1[] = "languageSymbolismMusic.txt";
-    const char NOM_FICHIER_2[] = "onTheOriginOfMusic.txt";
+    const char NOM_FICHIER_1[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_13c_listes_mots/languageSymbolismMusic.txt";
+    const char NOM_FICHIER_2[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_13c_listes_mots/onTheOriginOfMusic.txt";
+    //const char NOM_FICHIER_1[] = "languageSymbolismMusic.txt";
+    //const char NOM_FICHIER_2[] = "onTheOriginOfMusic.txt";
     FILE *fid;
 
     // Variables mots
@@ -267,19 +294,11 @@ int main() {
         printf("Le fichier %s n'a pas pu être ouvert !", NOM_FICHIER_2);
     }
 
-    // Affichage de la liste 1
-    Mot *motALire1 = liste1->premier;
-    for (int i = 0; i <= liste1->nbMot + 1; i++) {
-        printf("Le mot '%s' a %d occurence(s) \n", motALire1->mot, motALire1->nbOccurence);
-        motALire1 = motALire1->suivant;
-    }
+    delete("wringing", liste1);
 
-    // Affichage de la liste 2
-    Mot *motALire2 = liste2->premier;
-    for (int j = 0; j <= liste2->nbMot + 1; j++) {
-        printf("Le mot '%s' a %d occurence(s) \n", motALire2->mot, motALire2->nbOccurence);
-        motALire2 = motALire2->suivant;
-    }
+    // Affichage des 2 listes, triées séparément
+    afficherListe(liste2);
+    // afficherListe(liste2);
 }
 
 
