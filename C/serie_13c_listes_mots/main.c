@@ -74,7 +74,7 @@ int search(Mot *motToSearch, ListeMot *liste) {
     motTeste = liste->premier;
 
     // On parcourt la liste de mots
-    for (int i = 0; i <= liste->nbMot + 1; i++) {
+    for (int i = 0; i <= liste->nbMot; i++) {
 
         // Tant qu'on a un mot qui suit, on teste si notre mot apparaît dans la liste
         if (motTeste->suivant != NULL) {
@@ -148,7 +148,7 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
                     liste->nbMot++;
                 } else {
 
-                    for (int j = 0; j <= liste->nbMot + 1; j++) {
+                    for (int j = 0; j <= liste->nbMot; j++) {
 
                         // mot 1 < mot à insérer < mot 2
                         bool motToCompareLesserThanMotToInsert = strcmp(mot1->mot, motToInsert->mot) < 0;
@@ -177,6 +177,7 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
                             mot1->suivant = motToInsert;
                             motToInsert->precedent = mot1;
                             motToInsert->suivant = NULL;
+                            liste->nbMot++;
                         }
 
                         mot1 = mot2;
@@ -192,7 +193,7 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
 
 void afficherListe(ListeMot *liste) {
     Mot *motALire1 = liste->premier;
-    for (int i = 0; i <= liste->nbMot + 1; i++) {
+    for (int i = 0; i <= liste->nbMot; i++) {
         printf("Le mot '%s' a %d occurence(s) \n", motALire1->mot, motALire1->nbOccurence);
         motALire1 = motALire1->suivant;
     }
@@ -203,7 +204,7 @@ void delete(char * motToDelete, ListeMot * liste) {
 
     Mot *motToTest = liste->premier;
 
-    for (int i = 0; i <= liste->nbMot + 1; i++) {
+    for (int i = 0; i <= liste->nbMot; i++) {
         if (strcmp(motToDelete, motToTest->mot) == 0) {
             Mot *previous = motToTest->precedent;
             Mot *next = motToTest->suivant;
@@ -216,11 +217,40 @@ void delete(char * motToDelete, ListeMot * liste) {
     }
 }
 
-//// Retourne une liste triée avec tous les mots communs à 2 listes triées (met aussi leur nombre d'occurences)
-//void intersect() {
-//
-//}
-//
+// Retourne une liste triée avec tous les mots communs à 2 listes triées (met aussi leur nombre d'occurences à 1)
+ListeMot * intersect(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
+
+    ListeMot * listeIntersect = initListe();
+
+    Mot * motListe1 = liste1->premier;
+    Mot * motListe2 = liste2->premier;
+
+    // Commun de la liste 1 dans la liste 2
+    for(int i = 0; i <= liste1->nbMot; i++) {
+
+        int nbOccurences = search(motListe1, liste2);
+
+        if(nbOccurences > 0) {
+            insert(motListe1->mot, MAX_CHAR, listeIntersect);
+        }
+        motListe1 = motListe1->suivant;
+    }
+
+    // Commun de la liste 2 dans la liste 1
+    for(int i = 0; i <= liste2->nbMot; i++) {
+
+        int nbOccurencesListe1 = search(motListe2, liste1);
+        int nbOccurencesListeIntersect = search(motListe2, listeIntersect);
+
+        if(nbOccurencesListeIntersect == 0 && nbOccurencesListe1 > 0) {
+            insert(motListe2->mot, MAX_CHAR, listeIntersect);
+        }
+        motListe2 = motListe2->suivant;
+    }
+
+    return listeIntersect;
+}
+
 //// Retourne une liste triée avec tous les mots d'une 1ère liste triée n'apparaissant pas dans une seconde
 //void difference() {
 //
@@ -303,8 +333,14 @@ int main() {
     // delete("within", liste2);
 
     // Affichage des 2 listes, triées séparément
-    //afficherListe(liste1);
-    // afficherListe(liste2);
+    // afficherListe(liste1);
+     afficherListe(liste2);
+
+    printf("\n Construction de la liste intersect ! \n");
+
+    // Liste intersect : retourne liste triée avec mots communs aux 2 listes en paramètres
+    ListeMot * listeIntersect = intersect(liste1, liste2, MAX_CHAR);
+    //afficherListe(listeIntersect);
 }
 
 
