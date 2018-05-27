@@ -227,7 +227,6 @@ void delete(char * motToDelete, ListeMot * liste) {
 ListeMot * intersect(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
 
     ListeMot * listeIntersect = initListe();
-
     Mot * motListe1 = liste1->premier;
 
     for(int i = 0; i <= liste1->nbMot; i++) {
@@ -244,11 +243,26 @@ ListeMot * intersect(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
     return listeIntersect;
 }
 
-//// Retourne une liste triée avec tous les mots d'une 1ère liste triée n'apparaissant pas dans une seconde
-//void difference() {
-//
-//}
-//
+// Retourne une liste triée avec tous les mots d'une 1ère liste triée n'apparaissant pas dans une seconde
+ListeMot * difference(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
+
+    ListeMot * listeDifference = initListe();
+    Mot * motListe1 = liste1->premier;
+
+    for(int i = 0; i <= liste1->nbMot; i++) {
+
+        int nbOccurencesListe2 = search(motListe1, liste2);
+
+        if(nbOccurencesListe2 == 0) {
+            insert(motListe1->mot, MAX_CHAR, listeDifference); // Ajouter mot de liste 1 non trouvée dans liste 2
+        }
+        if(motListe1->suivant != NULL) {
+            motListe1 = motListe1->suivant;
+        } else break;
+    }
+    return listeDifference;
+}
+
 //// Concatène 2 listes triées. Nombre d'occurences des mots communs sommé.
 //void concat() {
 //
@@ -323,12 +337,21 @@ int main() {
 
     // Affichage des 2 listes, triées séparément
     // afficherListe(liste1, '1'); // J'ai des guillemets bizarres que je ne parviens pas à enlever/tester...
+    printf("Nombre de mots différents présents dans la liste 1 : %d \n", liste1->nbMot);
     // afficherListe(liste2, '2');
+    printf("Nombre de mots différents présents dans la liste 1 :: %d \n", liste2->nbMot);
 
     // Liste intersect : retourne liste triée avec mots communs aux 2 listes en paramètres
     ListeMot * listeIntersect = intersect(liste1, liste2, MAX_CHAR);
-    afficherListe(listeIntersect, "intersect");
-    printf("Nombre de mots liste intersect : %d", listeIntersect->nbMot);
+    // afficherListe(listeIntersect, "intersect");
+    printf("Nombre de mots liste communs entre la liste 1 et la liste 2 : %d \n", listeIntersect->nbMot);
+
+    // Liste différence : tous les mots d'une 1ère liste triée n'apparaissant pas dans une seconde
+    ListeMot * listeDifference1 = difference(liste1, liste2, MAX_CHAR);
+    printf("Nombre de mots de la liste 1 qui ne sont pas dans la liste 2 : %d \n", listeDifference1->nbMot);
+
+    ListeMot * listeDifference2 = difference(liste2, liste1, MAX_CHAR);
+    printf("Nombre de mots de la liste 2 qui ne sont pas dans la liste 1 : %d \n", listeDifference2->nbMot);
 }
 
 
