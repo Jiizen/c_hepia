@@ -37,8 +37,14 @@ ListeMot *initListe() {
 // Nettoie un mot
 char *clean(char *mot) {
 
+    // Mettre tout en minuscule
+    for (int i = 0; i < strlen(mot); i++) {
+        mot[i] = tolower(mot[i]);
+    }
+
     // Nettoyage du fin du mot
-    while (ispunct(mot[strlen(mot) - 1])) {
+
+    while ((ispunct(mot[strlen(mot) - 1]))) {
         mot[strlen(mot) - 1] = '\0';
     }
 
@@ -52,12 +58,6 @@ char *clean(char *mot) {
             }
         }
     }
-
-    // Mettre tout en minuscule
-    for (int i = 0; i < strlen(mot); i++) {
-        mot[i] = tolower(mot[i]);
-    }
-
     return mot;
 }
 
@@ -191,9 +191,12 @@ void insert(char *mot, int MAX_CHAR, ListeMot *liste) {
     }
 }
 
-void afficherListe(ListeMot *liste) {
+void afficherListe(ListeMot *liste, char * nom) {
+
+    printf("\nAffichage de la liste %s \n", nom);
+
     Mot *motALire1 = liste->premier;
-    for (int i = 0; i <= liste->nbMot; i++) {
+    for (int i = 0; i < liste->nbMot; i++) {
         printf("Le mot '%s' a %d occurence(s) \n", motALire1->mot, motALire1->nbOccurence);
         motALire1 = motALire1->suivant;
     }
@@ -217,37 +220,27 @@ void delete(char * motToDelete, ListeMot * liste) {
     }
 }
 
-// Retourne une liste triée avec tous les mots communs à 2 listes triées (met aussi leur nombre d'occurences à 1)
+/* Retourne une liste triée avec tous les mots communs à 2 listes triées (met aussi leur nombre d'occurences à 1)
+ * On recherche tout ce qui est dans 1 qui est dans 2 : pas besoin de faire pareil pour 2, car on ne trouverait rien,
+ * vu qu'on a déjà parcouru tout ce qui est possible en terme d'intersection en parcourant tous les mots de 1
+ */
 ListeMot * intersect(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
 
     ListeMot * listeIntersect = initListe();
 
     Mot * motListe1 = liste1->premier;
-    Mot * motListe2 = liste2->premier;
 
-    // Commun de la liste 1 dans la liste 2
     for(int i = 0; i <= liste1->nbMot; i++) {
 
-        int nbOccurences = search(motListe1, liste2);
+        int nbOccurencesListe2 = search(motListe1, liste2);
 
-        if(nbOccurences > 0) {
-            insert(motListe1->mot, MAX_CHAR, listeIntersect);
+        if(nbOccurencesListe2 > 0) {
+            insert(motListe1->mot, MAX_CHAR, listeIntersect); // Ajouter mot de liste 1 trouvée dans liste 2
         }
-        motListe1 = motListe1->suivant;
+        if(motListe1->suivant != NULL) {
+            motListe1 = motListe1->suivant;
+        } else break;
     }
-
-    // Commun de la liste 2 dans la liste 1
-    for(int i = 0; i <= liste2->nbMot; i++) {
-
-        int nbOccurencesListe1 = search(motListe2, liste1);
-        int nbOccurencesListeIntersect = search(motListe2, listeIntersect);
-
-        if(nbOccurencesListeIntersect == 0 && nbOccurencesListe1 > 0) {
-            insert(motListe2->mot, MAX_CHAR, listeIntersect);
-        }
-        motListe2 = motListe2->suivant;
-    }
-
     return listeIntersect;
 }
 
@@ -281,8 +274,6 @@ int main() {
 
     // CONSTRUCTION LISTE 1
 
-    printf("Construction de la liste 1 ! \n");
-
     fid = fopen(NOM_FICHIER_1, "r"); // Ouverture du fichier
 
     if (fid != NULL) {
@@ -305,8 +296,6 @@ int main() {
     }
 
     // CONSTRUCTION LISTE 2
-
-    printf("\n Construction de la liste 2 ! \n");
 
     fid = fopen(NOM_FICHIER_2, "r"); // Ouverture du fichier
 
@@ -333,14 +322,13 @@ int main() {
     // delete("within", liste2);
 
     // Affichage des 2 listes, triées séparément
-    // afficherListe(liste1);
-     afficherListe(liste2);
-
-    printf("\n Construction de la liste intersect ! \n");
+    // afficherListe(liste1, '1'); // J'ai des guillemets bizarres que je ne parviens pas à enlever/tester...
+    // afficherListe(liste2, '2');
 
     // Liste intersect : retourne liste triée avec mots communs aux 2 listes en paramètres
     ListeMot * listeIntersect = intersect(liste1, liste2, MAX_CHAR);
-    //afficherListe(listeIntersect);
+    afficherListe(listeIntersect, "intersect");
+    printf("Nombre de mots liste intersect : %d", listeIntersect->nbMot);
 }
 
 
