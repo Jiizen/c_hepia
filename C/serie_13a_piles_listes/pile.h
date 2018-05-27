@@ -1,6 +1,6 @@
 /**
- * Created by Evlyn on 15.05.18.
- * TP : Exercice 13A : Piles et listes
+ * Created by Evlyn
+ * TP : Exercice 13A - Piles et listes
  * Structures et déclaration de fonctions concernant les piles
  */
 
