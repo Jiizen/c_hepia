@@ -90,6 +90,32 @@ int search(Mot *motToSearch, ListeMot *liste) {
     return 0; // Si on a rien trouvé, on retourne 0
 }
 
+Mot * searchMot(Mot *motToSearch, ListeMot *liste) {
+
+    // Si le mot à chercher est le même que le premier mot de la liste, on incrémente son nombre d'occurences
+    if (strcmp(motToSearch->mot, liste->premier->mot) == 0) {
+        return liste->premier; // et on retourne combien de fois le mot est présent dans la liste
+    }
+
+    Mot *motTeste = malloc(sizeof(Mot));
+    motTeste = liste->premier;
+
+    // On parcourt la liste de mots
+    for (int i = 0; i <= liste->nbMot; i++) {
+
+        // Tant qu'on a un mot qui suit, on teste si notre mot apparaît dans la liste
+        if (motTeste->suivant != NULL) {
+            if (strcmp(motToSearch->mot, motTeste->suivant->mot) == 0) {
+                return motTeste->suivant; // Si oui, on incrément nbOccurences et on le retourne
+            }
+            motTeste = motTeste->suivant;
+        } else {
+            return NULL; // Si suivant est null, on retourne 0
+        }
+    }
+    return NULL; // Si on a rien trouvé, on retourne 0
+}
+
 Mot *initMot(Mot *motToInsert, char *mot, int MAX_CHAR) {
     motToInsert->mot = malloc(sizeof(char) * MAX_CHAR);
     memcpy(motToInsert->mot, mot, sizeof(char) * MAX_CHAR);
@@ -263,10 +289,32 @@ ListeMot * difference(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
     return listeDifference;
 }
 
-//// Concatène 2 listes triées. Nombre d'occurences des mots communs sommé.
-//void concat() {
-//
-//}
+// Concatène 2 listes triées. Nombre d'occurences des mots communs sommé.
+ListeMot * concat(ListeMot * liste1, ListeMot * liste2, int MAX_CHAR) {
+
+    Mot * motListe2 = liste2->premier; // On va parcourir les mots de la liste 2
+    Mot * motListe1 = malloc(sizeof(Mot));
+
+    for(int i = 0; i <= liste2->nbMot; i++) {
+
+        int nbOccurencesListe1 = search(motListe2, liste1); // On cherche un mot de la liste 2 dans la 1
+        int nbOccurencesListe2 = search(motListe2, liste2);
+
+        if(nbOccurencesListe1 == 0) { // Si on ne le trouve pas, on l'ajoute à la liste 1 et on ajoute le nb d'occurences de l'autre liste
+            insert(motListe2->mot, MAX_CHAR, liste1);
+            motListe1 = searchMot(motListe2, liste1);
+            motListe1->nbOccurence = nbOccurencesListe2;
+        } else { // Sinon, on somme uniquement les occurences
+            motListe1 = searchMot(motListe2, liste1);
+            motListe1->nbOccurence = 0;
+            motListe1->nbOccurence += nbOccurencesListe2;
+        }
+        if(motListe2->suivant != NULL) {
+            motListe2 = motListe2->suivant;
+        } else break;
+    }
+    return liste1;
+}
 
 int main() {
 
@@ -352,6 +400,11 @@ int main() {
 
     ListeMot * listeDifference2 = difference(liste2, liste1, MAX_CHAR);
     printf("Nombre de mots de la liste 2 qui ne sont pas dans la liste 1 : %d \n", listeDifference2->nbMot);
+
+    // Liste concat : concaténation de 2 listes. Somme des occurences.
+    ListeMot * listeConcat = concat(liste1, liste2, MAX_CHAR);
+    afficherListe(listeConcat, "concaténation");
+    printf("Nombre de mots de la liste 1 concaténés avec ceux de la liste 2 : %d \n", listeConcat->nbMot);
 }
 
 
