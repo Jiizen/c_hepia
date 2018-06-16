@@ -75,11 +75,15 @@ void insertNoeud(Noeud **arbre, int valeur) {
     }
 }
 
+/*
+ * Affichage de la valeur d’un noeud après les valeurs figurant dans son sous-arbre gauche et avant les
+ * valeurs figurant dans son sous-arbre droit
+ */
 void parcoursInfixe(Noeud *arbre) {
     if(!estNull(arbre)) {
-        parcoursInfixe(arbre->gauche); // On remonte toute la branche gauche
-        printf("%d ", arbre->valeur); // On affiche la valeur
-        parcoursInfixe(arbre->droite);
+        parcoursInfixe(arbre->gauche); // Parcours des fils de gauche
+        printf("%d ", arbre->valeur); // On affiche la valeur du noeud courant
+        parcoursInfixe(arbre->droite); // Parcours des fils de droit
     }
 }
 
@@ -92,11 +96,22 @@ int main() {
     const int n = 7;
     int tabNb[n];
 
+    printf("EXERCICE 1 \n");
     printf("Valeurs aléatoires : ");
     for (int i = 0; i < n; i++) {
         tabNb[i] = rand() % 100;
         printf("%d ", tabNb[i]);
     }
+
+/*
+    tabNb[0] = 10;
+    tabNb[1] = 20;
+    tabNb[2] = 4;
+    tabNb[3] = 8;
+    tabNb[4] = 5;
+    tabNb[5] = 15;
+    tabNb[6] = 3;
+*/
 
     // Premier noeud -> début de l'arbre : racine
     Noeud *arbre = NULL;
