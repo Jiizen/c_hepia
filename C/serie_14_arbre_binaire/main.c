@@ -29,40 +29,57 @@ Noeud *initNoeud(int valeur) {
     return newNoeud;
 }
 
-bool estNull(Noeud * noeud) {
-    if(noeud) {
+/* FONCTIONS */
+
+bool estNull(Noeud *noeud) {
+    if (noeud) {
         return false;
     } else {
         return true;
     }
 }
 
-void insertNoeud(Noeud **arbre, int valeurToInsert) {
+void insertNoeud(Noeud **arbre, int valeur) {
 
-    Noeud *newNoeud = initNoeud(valeurToInsert); // Initialisation d'un nouveau noeud
+    Noeud *noeudTemp = initNoeud(valeur);
+    Noeud *courant;
+    Noeud *parent;
 
-    // Initialisation des variables temporaires
-    Noeud *noeudTemp;
-    Noeud *arbreTemp = *arbre;
-
-    if (!estNull(arbreTemp)) { // Si arbre Temp est différent de null, donc qu'il y a au moins un noeud
-
-        do {
-            noeudTemp = arbreTemp;
-
-            if (valeurToInsert > arbreTemp->valeur) { // Si la valeur à insérer est plus grande que celle de la racine
-                arbreTemp = arbreTemp->droite; // Alors, on part à la droite de l'arbre
-                newNoeud->niveau++;
-                if (estNull(arbreTemp)) noeudTemp->droite = newNoeud; // Si le noeud est null, l'élément est placé à cet emplacement à droite
-            } else { // Si la valeur est plus petite, pareil à gauche
-                arbreTemp = arbreTemp->gauche;
-                newNoeud->niveau++;
-                if (estNull(arbreTemp)) noeudTemp->gauche = newNoeud;
-            }
-        } while (!estNull(arbreTemp)); // Parcourir les noeuds, tant qu'il n'y a pas d'emplacement libre
-
+    if (estNull(*arbre)) { // Si l'arbre est vide, on insère de suite le noeud
+        *arbre = noeudTemp;
     } else {
-        *arbre = newNoeud;
+        courant = *arbre; // l'arbre n'est pas vide, on lui crée une variable temporaire
+
+        while (1) { // Boucle infinie jusqu'à un return
+            parent = courant; // Parent = racine
+
+            if (valeur < parent->valeur) { // Si valeur à insérer est + petite que la valeur du parent, on va à gauche
+                courant = courant->gauche; // Redéfinition du noeud courant à celui de gauche
+                noeudTemp->niveau++;
+
+                if (courant == NULL) { // Si l'emplacement est libre, on met la valeur courante du noeud à cet endroit
+                    parent->gauche = noeudTemp;
+                    return;
+                }
+            } // Sinon, on part à droite
+            else {
+                courant = courant->droite;
+                noeudTemp->niveau++;
+
+                if (courant == NULL) { // Insertion à droite quand emplacement libre
+                    parent->droite = noeudTemp;
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void parcoursInfixe(Noeud *arbre) {
+    if(!estNull(arbre)) {
+        parcoursInfixe(arbre->gauche); // On remonte toute la branche gauche
+        printf("%d ", arbre->valeur); // On affiche la valeur
+        parcoursInfixe(arbre->droite);
     }
 }
 
@@ -75,18 +92,11 @@ int main() {
     const int n = 7;
     int tabNb[n];
 
-    /** for (int i = 0; i < n; i++) {
+    printf("Valeurs aléatoires : ");
+    for (int i = 0; i < n; i++) {
         tabNb[i] = rand() % 100;
-        // printf("Valeurs aléatoires : %d, ", tabNb[i]);
-    } */
-
-    tabNb[0] = 10;
-    tabNb[1] = 20;
-    tabNb[2] = 4;
-    tabNb[3] = 8;
-    tabNb[4] = 5;
-    tabNb[5] = 15;
-    tabNb[6] = 3;
+        printf("%d ", tabNb[i]);
+    }
 
     // Premier noeud -> début de l'arbre : racine
     Noeud *arbre = NULL;
@@ -95,5 +105,7 @@ int main() {
         insertNoeud(&arbre, tabNb[i]);
     }
 
-    printf("Première valeur arbre : %d \n", arbre->valeur);
+    // Parcours symétrique de l'arbre
+    printf("\nParcours infixé de notre arbre : ");
+    parcoursInfixe(arbre);
 }
