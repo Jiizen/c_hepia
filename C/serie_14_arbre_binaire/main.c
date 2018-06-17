@@ -92,7 +92,7 @@ void parcoursInfixeNombres(Noeud *arbre) {
 void parcoursInfixeMorse(Noeud *arbre) {
     if (!estNull(arbre)) {
         parcoursInfixeMorse(arbre->gauche); // Parcours des fils de gauche
-        if(arbre->valeur != '*') {
+        if (arbre->valeur != '*') {
             printf("%c ", arbre->valeur); // On affiche la valeur du noeud courant
         }
         parcoursInfixeMorse(arbre->droite); // Parcours des fils de droit
@@ -118,28 +118,45 @@ char *clean(char *codeMorse) { // Nettoie code morse : enlève première lettre 
     return codeMorse;
 }
 
-void insertNoeudMorse(Noeud **arbreMorse, char valeur, char *valeurMorse){
+void insertNoeudMorse(Noeud **arbreMorse, char valeur, char *valeurMorse) {
 
     const char TIRET = '-';
     const char POINT = '.';
 
-    if(!*arbreMorse) *arbreMorse = initNoeud(' '); // Si noeud vide, on en initialise un nouveau avec valeur vide
+    if (!*arbreMorse) *arbreMorse = initNoeud(' '); // Si noeud vide, on en initialise un nouveau avec valeur vide
 
-    if (!*valeurMorse){
+    if (!*valeurMorse) {
         (*arbreMorse)->valeur = valeur; // Insertion de la valeur à la fin du code morse
-    }
-    else if (*valeurMorse == TIRET) {
+    } else if (*valeurMorse == TIRET) {
         insertNoeudMorse(&(*arbreMorse)->gauche, valeur, ++valeurMorse); // incrément pour passer au caractère suivant
-    }
-    else if (*valeurMorse == POINT) {
+    } else if (*valeurMorse == POINT) {
         insertNoeudMorse(&(*arbreMorse)->droite, valeur, ++valeurMorse); // incrément pour passer au caractère suivant
+    }
+}
+
+void traduireLettreMorse(Noeud *arbreMorse, char *valeurMorse) {
+
+    const char TIRET = '-';
+    const char POINT = '.';
+
+    for (int i = 0; i <= strlen(valeurMorse); i++) {
+
+        if (i == strlen(valeurMorse)) {
+            printf("\nLa lettre équivalente au code morse %s = %c ", valeurMorse, arbreMorse->valeur);
+        } else {
+            if (valeurMorse[i] == TIRET) {
+                arbreMorse = arbreMorse->gauche;
+            } else {
+                arbreMorse = arbreMorse->droite;
+            }
+        }
     }
 }
 
 int main() {
 
     /** EXERCICE 1 */
-    printf("EXERCICE 1 \n");
+    printf("\n### EXERCICE 1 ###\n\n");
 
     // Génération de n nombres entiers aléatoires
     srand(time(0));
@@ -165,8 +182,9 @@ int main() {
     parcoursInfixeNombres(arbre);
 
     /** EXERCICE 2 */
-    printf("\n\nEXERCICE 2 \n");
+    printf("\n\n### EXERCICE 2 ###\n");
 
+    // TODO: chemin relatif à remettre
     const char CODE_MORSE[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_14_arbre_binaire/code-morse.txt";
     FILE *fid;
     char ligne[10];
@@ -193,4 +211,14 @@ int main() {
     // Parcours symétrique de l'arbre du code Morse
     printf("\nParcours infixé de notre arbre Morse : ");
     parcoursInfixeMorse(arbreMorse);
+
+    // Traduction d'une lettre Morse en lettre latine
+    printf("\n\nTraduction de 3 symboles Morse : ");
+    char *exemple1 = "...."; // H
+    char *exemple2 = ".";    // E
+    char *exemple3 = "-.--"; // Y
+
+    traduireLettreMorse(arbreMorse, exemple1);
+    traduireLettreMorse(arbreMorse, exemple2);
+    traduireLettreMorse(arbreMorse, exemple3);
 }
