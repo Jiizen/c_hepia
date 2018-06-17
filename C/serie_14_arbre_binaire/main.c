@@ -18,13 +18,13 @@ typedef struct Noeud Noeud;
 struct Noeud {
     char valeur;
     int niveau;
-    Noeud *gauche;
-    Noeud *droite;
+    Noeud *gauche; // TIRET pour code morse
+    Noeud *droite; // POINT pour code morse
 };
 
 Noeud *initNoeud(char valeur) {
     Noeud *newNoeud = malloc(sizeof(Noeud));
-    newNoeud->valeur = valeur; // Pour que ce soit compatible avec le morse
+    newNoeud->valeur = valeur;
     newNoeud->niveau = 0;
     newNoeud->gauche = NULL;
     newNoeud->droite = NULL;
@@ -59,7 +59,7 @@ void insertNoeud(Noeud **arbre, int valeur) {
                 courant = courant->gauche; // Redéfinition du noeud courant à celui de gauche
                 noeudTemp->niveau++;
 
-                if (courant == NULL) { // Si l'emplacement est libre, on met la valeur courante du noeud à cet endroit
+                if (estNull(courant)) { // Si l'emplacement est libre, on met la valeur courante du noeud à cet endroit
                     parent->gauche = noeudTemp;
                     return;
                 }
@@ -68,58 +68,10 @@ void insertNoeud(Noeud **arbre, int valeur) {
                 courant = courant->droite;
                 noeudTemp->niveau++;
 
-                if (courant == NULL) { // Insertion à droite quand emplacement libre
+                if (estNull(courant)) { // Insertion à droite quand emplacement libre
                     parent->droite = noeudTemp;
                     return;
                 }
-            }
-        }
-    }
-}
-
-void insertNoeudMorse(Noeud **arbre, char valeur, char *valeurMorse) {
-
-    const char POINT = '.';
-    const char TIRET = '-';
-
-    Noeud *noeudTemp = initNoeud(valeur);
-    Noeud *courant;
-    Noeud *parent;
-
-    if (estNull(*arbre)) {
-        noeudTemp->valeur = '*';
-        *arbre = noeudTemp;
-    } else {
-
-        courant = *arbre; // l'arbre n'est pas vide, on lui crée une variable temporaire
-
-        while (1) { // Boucle infinie jusqu'à un return
-            parent = courant; // Parent = racine
-
-            for (int i = 0; i < strlen(valeurMorse); i++) {
-                if (valeurMorse[i] == POINT) { // Si code morse == '.'
-                    courant = courant->gauche; // Redéfinition du noeud courant à celui de gauche
-                    noeudTemp->niveau++;
-                    if(courant == NULL && i != strlen(valeurMorse) - 1) {
-                        parent->gauche = initNoeud(' ');
-                    }
-                }
-                if (valeurMorse[i] == TIRET) {
-                    courant = courant->droite;
-                    noeudTemp->niveau++;
-                    if(courant == NULL && i != strlen(valeurMorse) - 1) {
-                        parent->droite = initNoeud(' ');
-                    }
-                }
-            }
-
-            // Si emplacement libre et dernière valeur == point
-            if(courant == NULL && valeurMorse[strlen(valeurMorse) - 1] == TIRET) {
-                parent->gauche = noeudTemp;
-                return;
-            } else if(courant == NULL && valeurMorse[strlen(valeurMorse) - 1] == POINT) {
-                parent->droite = noeudTemp;
-                return;
             }
         }
     }
@@ -129,18 +81,28 @@ void insertNoeudMorse(Noeud **arbre, char valeur, char *valeurMorse) {
  * Affichage de la valeur d’un noeud après les valeurs figurant dans son sous-arbre gauche et avant les
  * valeurs figurant dans son sous-arbre droit
  */
-void parcoursInfixe(Noeud *arbre) {
+void parcoursInfixeNombres(Noeud *arbre) {
     if (!estNull(arbre)) {
-        parcoursInfixe(arbre->gauche); // Parcours des fils de gauche
+        parcoursInfixeNombres(arbre->gauche); // Parcours des fils de gauche
         printf("%d ", arbre->valeur); // On affiche la valeur du noeud courant
-        parcoursInfixe(arbre->droite); // Parcours des fils de droit
+        parcoursInfixeNombres(arbre->droite); // Parcours des fils de droit
+    }
+}
+
+void parcoursInfixeMorse(Noeud *arbre) {
+    if (!estNull(arbre)) {
+        parcoursInfixeMorse(arbre->gauche); // Parcours des fils de gauche
+        if(arbre->valeur != '*') {
+            printf("%c ", arbre->valeur); // On affiche la valeur du noeud courant
+        }
+        parcoursInfixeMorse(arbre->droite); // Parcours des fils de droit
     }
 }
 
 char *clean(char *codeMorse) { // Nettoie code morse : enlève première lettre et les \r\n
 
     // Supprimer premier caractère : lettre latine et tout décaler
-    if (codeMorse[0] >= 'A' && codeMorse[0] <= 'Z') {
+    while ((codeMorse[0] >= 'A' && codeMorse[0] <= 'Z') || (codeMorse[0] == ' ')) {
         for (int i = 0; i < strlen(codeMorse); i++) {
             codeMorse[i] = codeMorse[i + 1];
             if (i == strlen(codeMorse)) {
@@ -154,6 +116,24 @@ char *clean(char *codeMorse) { // Nettoie code morse : enlève première lettre 
         codeMorse[strlen(codeMorse) - 1] = '\0';
     }
     return codeMorse;
+}
+
+void insertNoeudMorse(Noeud **arbreMorse, char valeur, char *valeurMorse){
+
+    const char TIRET = '-';
+    const char POINT = '.';
+
+    if(!*arbreMorse) *arbreMorse = initNoeud(' '); // Si noeud vide, on en initialise un nouveau avec valeur vide
+
+    if (!*valeurMorse){
+        (*arbreMorse)->valeur = valeur; // Insertion de la valeur à la fin du code morse
+    }
+    else if (*valeurMorse == TIRET) {
+        insertNoeudMorse(&(*arbreMorse)->gauche, valeur, ++valeurMorse); // incrément pour passer au caractère suivant
+    }
+    else if (*valeurMorse == POINT) {
+        insertNoeudMorse(&(*arbreMorse)->droite, valeur, ++valeurMorse); // incrément pour passer au caractère suivant
+    }
 }
 
 int main() {
@@ -182,16 +162,15 @@ int main() {
 
     // Parcours symétrique de l'arbre
     printf("\nParcours infixé de notre arbre : ");
-    parcoursInfixe(arbre);
+    parcoursInfixeNombres(arbre);
 
     /** EXERCICE 2 */
     printf("\n\nEXERCICE 2 \n");
 
-    /* Création de  l'arbre du code Morse (profondeur 4) */
     const char CODE_MORSE[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_14_arbre_binaire/code-morse.txt";
     FILE *fid;
     char ligne[10];
-    Noeud *arbreMorse = NULL;
+    Noeud *arbreMorse = initNoeud('*');
 
     fid = fopen(CODE_MORSE, "r"); // Ouverture du fichier
 
@@ -202,10 +181,8 @@ int main() {
             char lettreLatine = ligne[0]; // Récupération première lettre (latine)
             char *lettreMorse = clean(ligne); // Récupération propre du code morse
 
-            if (lettreLatine != ' ') {
-                Noeud *newNoeud = initNoeud(lettreLatine);
+            if (lettreLatine != ' ' && lettreLatine != '-') {
                 insertNoeudMorse(&arbreMorse, lettreLatine, lettreMorse);
-                // printf("Valeur : %c \n", newNoeud->valeur);
             }
         }
         fclose(fid); // fermeture du fichier
@@ -215,5 +192,5 @@ int main() {
 
     // Parcours symétrique de l'arbre du code Morse
     printf("\nParcours infixé de notre arbre Morse : ");
-    //parcoursInfixe(arbreMorse);
+    parcoursInfixeMorse(arbreMorse);
 }
