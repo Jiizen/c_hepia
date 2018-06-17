@@ -102,7 +102,7 @@ void parcoursInfixeMorse(Noeud *arbre) {
 char *clean(char *codeMorse) { // Nettoie code morse : enlève première lettre et les \r\n
 
     // Supprimer premier caractère : lettre latine et tout décaler
-    while ((codeMorse[0] >= 'A' && codeMorse[0] <= 'Z') || (codeMorse[0] == ' ')) {
+    while ((codeMorse[0] >= 'A' && codeMorse[0] <= 'Z') || (codeMorse[0] == ' ') || (codeMorse[0] == '/')) {
         for (int i = 0; i < strlen(codeMorse); i++) {
             codeMorse[i] = codeMorse[i + 1];
             if (i == strlen(codeMorse)) {
@@ -134,7 +134,7 @@ void insertNoeudMorse(Noeud **arbreMorse, char valeur, char *valeurMorse) {
     }
 }
 
-void traduireLettreMorse(Noeud *arbreMorse, char *valeurMorse) {
+char traduireLettreMorse(Noeud *arbreMorse, char *valeurMorse) {
 
     const char TIRET = '-';
     const char POINT = '.';
@@ -142,7 +142,7 @@ void traduireLettreMorse(Noeud *arbreMorse, char *valeurMorse) {
     for (int i = 0; i <= strlen(valeurMorse); i++) {
 
         if (i == strlen(valeurMorse)) {
-            printf("\nLa lettre équivalente au code morse %s = %c ", valeurMorse, arbreMorse->valeur);
+            return arbreMorse->valeur;
         } else {
             if (valeurMorse[i] == TIRET) {
                 arbreMorse = arbreMorse->gauche;
@@ -218,7 +218,43 @@ int main() {
     char *exemple2 = ".";    // E
     char *exemple3 = "-.--"; // Y
 
-    traduireLettreMorse(arbreMorse, exemple1);
-    traduireLettreMorse(arbreMorse, exemple2);
-    traduireLettreMorse(arbreMorse, exemple3);
+    // Traduction
+    char tradExemple1 = traduireLettreMorse(arbreMorse, exemple1);
+    char tradExemple2 = traduireLettreMorse(arbreMorse, exemple2);
+    char tradExemple3 = traduireLettreMorse(arbreMorse, exemple3);
+
+    // Affichage
+    printf("\nLa lettre équivalente au code morse %s = %c ", exemple1, tradExemple1);
+    printf("\nLa lettre équivalente au code morse %s = %c ", exemple2, tradExemple2);
+    printf("\nLa lettre équivalente au code morse %s = %c ", exemple3, tradExemple3);
+
+    // Traduction du fichier texte-morse.txt
+    // TODO: chemin relatif
+    const char TEXTE_MORSE[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_14_arbre_binaire/texte-morse.txt";
+    FILE *fidTexteMorse;
+    char *motMorse;
+    const char SLASH = '/';
+
+    fidTexteMorse = fopen(TEXTE_MORSE, "r");
+
+    printf("\n\nTraduction du fichier %s : \n", TEXTE_MORSE);
+    if (fidTexteMorse != NULL) {
+        while (!feof(fidTexteMorse)) {
+            // fgets(ligneTexteMorse, sizeof(ligneTexteMorse), fidTexteMorse);
+            fscanf(fid, "%s", motMorse);
+
+            char lettreTraduite;
+
+            if (motMorse[0] == SLASH) {
+                printf(" ");
+            }
+
+            char *motMorseClean = clean(motMorse);
+            lettreTraduite = traduireLettreMorse(arbreMorse, motMorseClean);
+            printf("%c", lettreTraduite);
+        }
+        fclose(fid);
+    } else {
+        printf("Le fichier %s n'a pas pu être ouvert !", TEXTE_MORSE);
+    }
 }
