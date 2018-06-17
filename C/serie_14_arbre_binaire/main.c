@@ -233,6 +233,7 @@ int main() {
     const char TEXTE_MORSE[] = "/Users/evlyn/SynologyDrive/Hepia/repo_hepia/C/serie_14_arbre_binaire/texte-morse.txt";
     FILE *fidTexteMorse;
     char *motMorse;
+    char ligneMorse[200];
     const char SLASH = '/';
 
     fidTexteMorse = fopen(TEXTE_MORSE, "r");
@@ -240,18 +241,22 @@ int main() {
     printf("\n\nTraduction du fichier %s : \n", TEXTE_MORSE);
     if (fidTexteMorse != NULL) {
         while (!feof(fidTexteMorse)) {
-            // fgets(ligneTexteMorse, sizeof(ligneTexteMorse), fidTexteMorse);
-            fscanf(fid, "%s", motMorse);
 
-            char lettreTraduite;
+            fgets(ligneMorse, 200, fidTexteMorse);
 
-            if (motMorse[0] == SLASH) {
-                printf(" ");
+            motMorse = strtok(ligneMorse, " ");
+            while (motMorse != NULL) {
+                if (motMorse[0] == SLASH) {
+                    printf(" ");
+                }
+
+                char *motMorseClean = clean(motMorse); // Nettoyage code morse
+                char lettreTraduite = traduireLettreMorse(arbreMorse, motMorse); // traduction du code
+                printf("%c", lettreTraduite);
+
+                motMorse = strtok(NULL, " "); // mot suivant
             }
-
-            char *motMorseClean = clean(motMorse);
-            lettreTraduite = traduireLettreMorse(arbreMorse, motMorseClean);
-            printf("%c", lettreTraduite);
+            printf("\n"); // Saut à la ligne à chaque fin de ligne
         }
         fclose(fid);
     } else {
