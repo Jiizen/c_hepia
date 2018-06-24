@@ -1,3 +1,12 @@
+/** 
+ *  Projet Arduino avec un capteur pour changer la couleur 
+ *  et un autre pour changer l'intensité
+ *  
+ *  25/06/2018
+ *  
+ *  Maryam Abloua et Evlyn Dezegher
+ */
+
 #define sensorA0 A0 // Capteur pour la couleur 
 #define sensorA1 A1 // Capteur pour l'intensité
 
