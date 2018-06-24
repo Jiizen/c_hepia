@@ -48,7 +48,7 @@ void loop()
    * Intervalle 7 à 14 cm : Vert --> extinction de rouge et bleu 
    * Reste : Bleu --> extinction de rouge et vert
    */
- if(distanceA0 >= 0 && distanceA0 < 7) {
+ if(distanceA0 > 0 && distanceA0 < 7) {
       couleur = R; 
       digitalWrite(G, ETEINT);
       digitalWrite(B, ETEINT);
@@ -73,7 +73,7 @@ void loop()
    * Intervalle 7 à 14 cm : 128
    * Reste : 255 
    */
-  if(distanceA1 >= 0 && distanceA1 < 7) {
+  if(distanceA1 > 0 && distanceA1 < 7) {
       analogWrite(couleur, 0); 
   } else if(distanceA1 >= 7 && distanceA1 < 14) {
       analogWrite(couleur, 128); 
