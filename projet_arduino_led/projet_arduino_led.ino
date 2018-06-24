@@ -48,11 +48,11 @@ void loop()
    * Intervalle 7 à 14 cm : Vert --> extinction de rouge et bleu 
    * Reste : Bleu --> extinction de rouge et vert
    */
- if(distanceA0 >= 0 && distanceA0 < 7 && distanceA0 != 0) {
+ if(distanceA0 >= 0 && distanceA0 < 7) {
       couleur = R; 
       digitalWrite(G, ETEINT);
       digitalWrite(B, ETEINT);
-  } else if(distanceA0 >= 7 && distanceA0 < 14 && distanceA0 != 0) {
+  } else if(distanceA0 >= 7 && distanceA0 < 14) {
       couleur = G;
       digitalWrite(R, ETEINT);
       digitalWrite(B, ETEINT);
@@ -61,7 +61,6 @@ void loop()
       digitalWrite(R, ETEINT);
       digitalWrite(G, ETEINT);
   } 
-        Serial.println(couleur);
 
   /**************** Capteur pour l'intensité (A1) ****************/ 
   
@@ -74,9 +73,9 @@ void loop()
    * Intervalle 7 à 14 cm : 128
    * Reste : 255 
    */
-  if(distanceA1 >= 0 && distanceA1 < 7 && distanceA1 != 0) {
+  if(distanceA1 >= 0 && distanceA1 < 7) {
       analogWrite(couleur, 0); 
-  } else if(distanceA1 >= 7 && distanceA1 < 14 && distanceA1 != 0) {
+  } else if(distanceA1 >= 7 && distanceA1 < 14) {
       analogWrite(couleur, 128); 
   } else {
       analogWrite(couleur, 255); 
